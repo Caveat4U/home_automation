@@ -10,3 +10,4 @@ apt-get install libffi-dev libssl-dev
 pip install requests[security]
 sudo apt-get install libcurl4-openssl-dev
 pip install eventsource
+sudo apt-get install python-usb

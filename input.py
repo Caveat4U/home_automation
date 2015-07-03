@@ -2,7 +2,7 @@ import abc
 
 class Input(object):
     def __enter__(self):
-    	pass
+    	return self
 
     def __init__(self):
         self.triggered = False
