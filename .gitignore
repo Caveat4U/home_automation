@@ -58,3 +58,4 @@ target/
 
 config.py
 client_secrets.json
+scenes.json
