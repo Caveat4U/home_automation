@@ -11,3 +11,5 @@ pip install requests[security]
 sudo apt-get install libcurl4-openssl-dev
 pip install eventsource
 sudo apt-get install python-usb
+sudo pip uninstall -y pyusb
+sudo pip install pyusb==1.0.0b1
