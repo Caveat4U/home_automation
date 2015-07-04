@@ -7,6 +7,7 @@ from array import array
 from collections import defaultdict, Counter
 import logging, time, sys
 import threading
+from trigger import IClickerTrigger
 
 log = logging.getLogger(__name__)
 
@@ -399,9 +400,13 @@ class IClickerPoll(object):
             # if there is no response, do nothing but update the display
             if response is None:
                 continue
+            # A response was detected
             for info in response.response_info():
                 self.add_response(Response(info['clicker_id'], info['response'],
                                            time.time(), info['seq_num']))
+                # Call any actions from this clicker.
+                IClickerTrigger(info['clicker_id'], info['response'],
+                                           time.time(), info['seq_num'])
             self.update_display()
 
     def display_update_loop(self, interval=1):
@@ -452,7 +457,7 @@ if __name__ == '__main__':
                         help='Display debug information about the USB transactions')
     parser.add_argument('--type', type=str, default='alpha',
                         help='Sets the poll type to alpha, numeric, or alphanumeric')
-    parser.add_argument('--duration', type=str, default='100m0s',
+    parser.add_argument('--duration', type=str, default='0m0s',
                         help='Sets the duration of the poll in minutes and seconds. 0m0s is unlimited.')
     parser.add_argument('--dest', type=str, default='',
                         help='Sets the file to save polling data to.')
@@ -503,8 +508,3 @@ if __name__ == '__main__':
     # If we made it this far and stop_timer wasn't triggered, we were asked to stop another
     # way, so we should stop the stop_timer
     stop_timer.cancel()
-    if args.dest:
-        file_name = args.dest
-        print('Writing results to {0}'.format(file_name))
-        with open(file_name, 'w') as out_file:
-            out_file.write(poll.get_most_recent_responses_formatted())
